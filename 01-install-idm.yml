@@ -1,0 +1,27 @@
+---
+- name: Install IPA Server, enable and start it, and open firewall ports
+  hosts: idm.aus.redhat.com
+  gather_facts: false
+  tasks:
+    - name: Install IPA server and DNS packages
+      ansible.builtin.dnf:
+        name:
+          - ipa-server
+          - ipa-server-dns
+        state: present
+
+    - name: Open ports for IdM
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        state: enabled
+        permanent: true
+        immediate: true
+      loop:
+        - dns
+        - freeipa-ldaps
+        - freeipa-ldap
+        - http
+        - https
+        - kerberos
+        - kpasswd
+        - ntp

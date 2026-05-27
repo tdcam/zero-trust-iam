@@ -1,0 +1,24 @@
+---
+- name: Install FreeIPA Client
+  hosts: app,db,file,web,ws
+  become: true
+  gather_facts: true
+  vars:
+    ipaadmin_principal: admin
+    ipaadmin_password: CHANGEME
+    ipaclient_domain: aus.redhat.com
+    ipaclient_servers:
+      - idm.aus.redhat.com
+    ipaclient_ntp_servers:
+      - idm.aus.redhat.com
+    ipaclient_setup_dns: true
+    ipaclient_mkhomedir: true
+    ipaclient_ip_addresses:
+      - "{{ ansible_default_ipv4.address }}"
+    ipaclient_allow_dns_updates: true
+    ipaclient_force_join: true
+
+  tasks:
+    - name: Import ipaclient role
+      ansible.builtin.import_role:
+        name: freeipa.ansible_freeipa.ipaclient

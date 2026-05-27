@@ -1,0 +1,25 @@
+---
+- name: Copy ssh and sshd configs to enable SSh key rotation
+  hosts: app,db,file,web,ws
+  gather_facts: false
+  become: true
+  tasks:
+    - name: copy sshd config
+      copy:
+        src: 01-idm-sshd.conf
+        dest: /etc/ssh/sshd_config.d/01-idm-sshd.conf
+        owner: root
+        group: root
+        mode: 0644
+    - name: copy ssh config
+      copy:
+        src: 01-idm-ssh.conf
+        dest: /etc/ssh/ssh_config.d/01-idm-ssh.conf
+        owner: root
+        group: root
+        mode: 0644
+    - name: restart sshd
+      systemd_service:
+        name: sshd
+        state: restarted
+
